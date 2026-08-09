@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { LogIn, ShieldCheck } from "lucide-react";
+import { LogIn } from "lucide-react";
 import { trpc } from "@/providers/trpc";
 
 export default function Login() {
@@ -34,22 +34,12 @@ export default function Login() {
             كلمة المرور
             <input type="password" required minLength={8} autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" className="mt-1.5 h-12 w-full border border-line-strong bg-paper-base px-3.5 text-[14px] text-ink-900 outline-none transition-colors focus:border-primary-500" dir="ltr" />
           </label>
-          {localLogin.error && <p role="alert" className="rounded-xl bg-redink-bg px-3 py-2.5 text-[12.5px] font-medium text-redink">{localLogin.error.message}</p>}
+          {localLogin.error && <p role="alert" className="rounded-xl bg-redink-bg px-3 py-2.5 text-[12.5px] font-medium text-redink">تعذر تسجيل الدخول. راجع البريد وكلمة المرور وحاول مرة أخرى.</p>}
           <button type="submit" disabled={localLogin.isPending} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-500 px-4 text-[14px] font-semibold text-white shadow-card transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60">
             <LogIn className="size-4" />
             {localLogin.isPending ? "جاري تسجيل الدخول…" : "تسجيل الدخول"}
           </button>
         </form>
-
-        <div className="mt-5 rounded-2xl border border-gold-500/30 bg-gold-100/60 p-3.5">
-          <div className="flex items-center gap-2 text-[12.5px] font-semibold text-gold-600"><ShieldCheck className="size-4" /> حسابات التجربة المحلية</div>
-          <div className="mt-2 space-y-1 text-[12px] text-ink-600" dir="ltr">
-            <p>admin@nuqta.local / Admin@12345</p>
-            <p>scribe@nuqta.local / Scribe@12345</p>
-          </div>
-          <p className="mt-2 text-[11px] leading-5 text-ink-500">تحتاج الحسابات إلى تشغيل migrations وseed على قاعدة البيانات.</p>
-        </div>
-
       </section>
     </main>
   );
