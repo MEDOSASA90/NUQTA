@@ -13,7 +13,7 @@ import {
   uniqueIndex,
   index,
 } from "drizzle-orm/mysql-core";
-import type { Permission } from "../api/domain/types";
+import type { Permission } from "../server/domain/types";
 
 export const users = mysqlTable("users", {
   id: serial("id").primaryKey(),

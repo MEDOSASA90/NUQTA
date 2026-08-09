@@ -12,7 +12,7 @@ import { toPdfDrawableText, toVisualArabic, wrapArabic } from "./arabic-text";
  */
 async function renderedByPdfLib(text: string): Promise<string> {
   const fontBytes = await fs.readFile(
-    path.resolve(process.cwd(), "api/assets/fonts/Amiri-Regular.ttf"),
+    path.resolve(process.cwd(), "server/assets/fonts/Amiri-Regular.ttf"),
   );
   const font = await fontkit.create(fontBytes);
   const idToChar = new Map<number, string>();

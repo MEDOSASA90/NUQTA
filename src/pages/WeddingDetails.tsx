@@ -40,7 +40,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import type { inferRouterOutputs } from '@trpc/server'
 import { trpc } from '@/providers/trpc'
-import type { AppRouter } from '../../api/router'
+import type { AppRouter } from '../../server/router'
 import EmptyState from '@/components/EmptyState'
 import PersonCombobox from '@/components/PersonCombobox'
 import WarmMenu from '@/components/WarmMenu'

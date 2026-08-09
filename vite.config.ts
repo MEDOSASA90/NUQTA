@@ -10,7 +10,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   base: './',
   plugins: [
-    devServer({ entry: "api/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
+    devServer({ entry: "server/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
     inspectAttr(),
     react(),
     VitePWA({

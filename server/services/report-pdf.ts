@@ -57,9 +57,9 @@ function firstExisting(candidates: string[]): string {
 }
 
 const FONT_PATH = firstExisting([
-  path.resolve(process.cwd(), "api/assets/fonts/Amiri-Regular.ttf"),
-  path.resolve(HERE, "../api/assets/fonts/Amiri-Regular.ttf"), // dist → <root>/api/assets
-  path.resolve(HERE, "../assets/fonts/Amiri-Regular.ttf"), // api/services → api/assets
+  path.resolve(process.cwd(), "server/assets/fonts/Amiri-Regular.ttf"),
+  path.resolve(HERE, "../server/assets/fonts/Amiri-Regular.ttf"), // dist → <root>/server/assets
+  path.resolve(HERE, "../assets/fonts/Amiri-Regular.ttf"), // server/services → server/assets
   path.resolve(HERE, "assets/fonts/Amiri-Regular.ttf"), // dist/assets (تُنسخ في البناء)
 ]);
 

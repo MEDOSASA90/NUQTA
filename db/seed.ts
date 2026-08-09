@@ -5,7 +5,7 @@
  * كل حالات السداد (صفا/جزئي/زيادة/مفتوح)، سجلات تدقيق، رسائل واتساب محاكاة.
  * التشغيل: npx tsx db/seed.ts  (يدعم إعادة التشغيل — يمسح بيانات الدومين أولًا)
  */
-import { getDb } from "../api/queries/connection";
+import { getDb } from "../server/queries/connection";
 import {
   auditLog,
   eventAssignments,
@@ -19,7 +19,7 @@ import {
   users,
   whatsappMessages,
 } from "./schema";
-import { hashPassword } from "../api/services/password";
+import { hashPassword } from "../server/services/password";
 import { eq } from "drizzle-orm";
 
 const db = getDb();
@@ -551,7 +551,7 @@ async function seed() {
   // ── تقرير PDF لفرحة محمد عبد الله (تمت) ──
   try {
     const { generateEventReport } = await import(
-      "../api/services/report-pdf"
+      "../server/services/report-pdf"
     );
     const report = await generateEventReport(tenantId, evMohamed);
     console.log(`PDF report generated: ${report.fileUrl}`);
