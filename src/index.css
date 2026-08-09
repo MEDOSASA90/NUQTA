@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* لوحة «ورق وحبر» — shadcn variables re-mapped to the warm palette */
+    --background: 40 45% 94%;        /* #F6F1E7 */
+    --foreground: 36 29% 13%;        /* #2C2418 */
+    --card: 45 67% 98%;              /* #FDFBF5 */
+    --card-foreground: 36 29% 13%;
+    --popover: 45 67% 98%;
+    --popover-foreground: 36 29% 13%;
+    --primary: 32 50% 44%;           /* #A87438 */
+    --primary-foreground: 43 100% 99%;
+    --secondary: 42 42% 89%;         /* #EFE8D8 */
+    --secondary-foreground: 36 21% 25%;
+    --muted: 42 42% 89%;
+    --muted-foreground: 34 13% 43%;  /* #7C7060 */
+    --accent: 38 59% 87%;            /* #F2E4CC */
+    --accent-foreground: 31 54% 36%;
+    --destructive: 7 53% 41%;        /* #A03E31 */
+    --destructive-foreground: 43 100% 99%;
+    --border: 39 37% 84%;            /* #E5DAC6 */
+    --input: 38 33% 75%;             /* #D5C7AB */
+    --ring: 32 50% 44%;
+    --radius: 10px;
+    --sidebar-background: 45 67% 98%;
+    --sidebar-foreground: 36 21% 25%;
+    --sidebar-primary: 32 50% 44%;
+    --sidebar-primary-foreground: 43 100% 99%;
+    --sidebar-accent: 38 59% 87%;
+    --sidebar-accent-foreground: 31 54% 36%;
+    --sidebar-border: 39 37% 84%;
+    --sidebar-ring: 32 50% 44%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    direction: rtl;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper-base text-ink-900 font-plex;
+    font-size: 15px;
+    line-height: 1.65;
+    /* ملمس ورق البردي — ثابت، multiply بشفافية خفيفة */
+    background-image: url("/paper-texture.png");
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* أمان الموبايل: ممنوع أي تسرّب أفقي يدفع المحتوى خارج الشاشة
+       (clip لا يُنشئ حاوية تمرير فلا يكسر position: sticky) */
+    overflow-x: clip;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    border-radius: 12px;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .overflow-x-auto {
+    scrollbar-width: thin;
+    overscroll-behavior-inline: contain;
+  }
+
+  /* الأرقام والمبالغ: أرقام لاتينية جدولية داخل سياق عربي */
+  .tnum,
+  td,
+  th {
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  .num-ltr {
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
+
+  /* حلقة تركيز واضحة — إتاحة */
+  :focus-visible {
+    outline: 2px solid #A87438;
+    outline-offset: 2px;
+  }
+
+  /* ممنوع ميلان على العربية — التأكيد بالوزن واللون فقط */
+  em,
+  i {
+    font-style: normal;
+  }
+
+  ::selection {
+    background: #F2E4CC;
+    color: #452C15;
+  }
+
+  /* شريط تمرير دافئ */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #EFE8D8;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D5C7AB;
+    border-radius: 8px;
+    border: 2px solid #EFE8D8;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C4B091;
+  }
+}
+
+@layer utilities {
+  /* سطح بطاقة ورقي */
+  .surface-card {
+    @apply bg-paper-surface border border-line rounded-2xl shadow-card;
+    box-shadow: 0 8px 24px rgba(91, 67, 37, 0.06);
+  }
+
+  .page-title {
+    @apply font-kufi text-[22px] font-bold leading-8 text-ink-900 md:text-[26px];
+  }
+
+  .page-subtitle {
+    @apply mt-1 text-[13px] leading-6 text-ink-500 md:text-[14px];
+  }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* ترويسة احتفالية بالنقشة المصرية */
+  .pattern-festive {
+    background-image: url("/pattern-egyptian.svg");
+    background-size: 240px 240px;
+  }
+
+  /* ختم «صفّى حسابه» */
+  .stamp-tilt {
+    transform: rotate(-4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.15s !important;
+    transition-duration: 0.15s !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-image: none;
+    font-size: 14px;
+  }
+
+  .surface-card {
+    border-radius: 14px;
+    box-shadow: 0 5px 16px rgba(91, 67, 37, 0.055);
+  }
+
+  .surface-card.p-5,
+  .surface-card.p-6 {
+    padding: 1rem;
+  }
+
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 200" fill="none">
+  <ellipse cx="140" cy="184" rx="90" ry="7" fill="#8F5E2B" opacity="0.08"/>
+  <!-- phone -->
+  <rect x="96" y="22" width="88" height="158" rx="14" fill="#FDFBF5" stroke="#8F5E2B" stroke-width="2.6"/>
+  <path d="M126 33 L154 33" stroke="#8F5E2B" stroke-width="2.4" stroke-linecap="round"/>
+  <circle cx="140" cy="168" r="4.5" stroke="#8F5E2B" stroke-width="1.8"/>
+  <rect x="104" y="44" width="72" height="112" rx="6" fill="#F2E4CC" opacity="0.45"/>
+  <!-- chat bubble with nuqta marks -->
+  <g transform="translate(178 58)">
+    <path d="M0 0 L52 0 C60 0 66 6 66 14 L66 34 C66 42 60 48 52 48 L18 48 L4 60 L6 48 C-1 46 -6 41 -6 34 L-6 14 C-6 6 0 0 8 0 Z"
+          fill="#FDFBF5" stroke="#8F5E2B" stroke-width="2.4" stroke-linejoin="round" transform="translate(6 0) scale(0.92)"/>
+    <path d="M14 16 L9 32 M27 16 L22 32 M40 16 L35 32" stroke="#8F5E2B" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <circle cx="72" cy="70" r="2.4" fill="#C29B3C"/>
+  <circle cx="60" cy="98" r="1.8" fill="#C29B3C"/>
+  <path d="M112 66 C124 60 136 60 148 65" stroke="#8F5E2B" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
+  <path d="M112 82 C124 76 136 76 148 81" stroke="#8F5E2B" stroke-width="1.4" stroke-linecap="round" opacity="0.35"/>
+</svg>
