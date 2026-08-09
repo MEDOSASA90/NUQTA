@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ShieldCheck, Users, Building2, Save } from 'lucide-react'
+import { ShieldCheck, Users, Building2, Save, UserPlus } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
@@ -26,6 +26,13 @@ export default function Admin() {
     { enabled: tenantId !== null },
   )
   const utils = trpc.useUtils()
+  const [newUser, setNewUser] = useState({ name: '', email: '', password: '' })
+  const createUserMut = trpc.admin.createUser.useMutation({
+    onSuccess: async () => {
+      setNewUser({ name: '', email: '', password: '' })
+      await utils.admin.users.invalidate()
+    },
+  })
   const statusMut = trpc.admin.setUserStatus.useMutation({
     onSuccess: async () => {
       await utils.admin.users.invalidate()
@@ -66,6 +73,17 @@ export default function Admin() {
         <h1 className="font-kufi text-[24px] font-bold text-ink-900">إدارة النظام</h1>
         <p className="mt-1 text-[13px] text-ink-500">إدارة المستخدمين، المستأجرين، وأدوار فريق التسجيل.</p>
       </div>
+
+      <section className="surface-card p-5">
+        <div className="mb-4 flex items-center gap-2 font-kufi font-semibold text-ink-900"><UserPlus className="size-5 text-primary-600" /> إنشاء مستخدم</div>
+        <form onSubmit={(event) => { event.preventDefault(); createUserMut.mutate(newUser) }} className="grid gap-3 md:grid-cols-4">
+          <input required minLength={2} value={newUser.name} onChange={(event) => setNewUser({ ...newUser, name: event.target.value })} placeholder="الاسم" className="h-11 rounded-lg border border-line-strong bg-paper-base px-3 text-sm" />
+          <input required type="email" value={newUser.email} onChange={(event) => setNewUser({ ...newUser, email: event.target.value })} placeholder="البريد الإلكتروني" className="h-11 rounded-lg border border-line-strong bg-paper-base px-3 text-sm" dir="ltr" />
+          <input required minLength={8} type="password" value={newUser.password} onChange={(event) => setNewUser({ ...newUser, password: event.target.value })} placeholder="كلمة المرور" className="h-11 rounded-lg border border-line-strong bg-paper-base px-3 text-sm" dir="ltr" />
+          <button type="submit" disabled={createUserMut.isPending} className="h-11 rounded-lg bg-primary-500 px-4 text-sm font-semibold text-white disabled:opacity-60">{createUserMut.isPending ? 'جاري الإنشاء…' : 'إنشاء المستخدم'}</button>
+        </form>
+        {createUserMut.error && <p role="alert" className="mt-3 text-sm text-redink">تعذر إنشاء المستخدم: {createUserMut.error.message}</p>}
+      </section>
 
       <div className="grid gap-5 xl:grid-cols-2">
         <section className="surface-card p-5">

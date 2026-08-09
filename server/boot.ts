@@ -13,8 +13,23 @@ import { getReportById } from "./queries/reports";
 import { getEvent } from "./queries/events";
 import { isMemberOfTenant } from "./queries/tenants";
 import { reportFilePath } from "./services/report-pdf";
+import { getDb } from "./queries/connection";
+import { sql } from "drizzle-orm";
 
 const app = new Hono<{ Bindings: HttpBindings }>();
+
+app.get("/api/health", async (c) => {
+  try {
+    await getDb().execute(sql`select 1`);
+    return c.json({ ok: true, database: "up" });
+  } catch (error) {
+    console.error(JSON.stringify({
+      event: "health_check_failed",
+      message: error instanceof Error ? error.message : "unknown error",
+    }));
+    return c.json({ ok: false, database: "down" }, 503);
+  }
+});
 
 app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
 app.get(Paths.oauthCallback, createOAuthCallbackHandler());
@@ -135,6 +150,16 @@ app.use("/api/trpc/*", async (c) => {
   });
 });
 app.all("/api/*", (c) => c.json({ error: "Not Found" }, 404));
+
+app.onError((error, c) => {
+  console.error(JSON.stringify({
+    event: "unhandled_request_error",
+    method: c.req.method,
+    path: c.req.path,
+    message: error.message,
+  }));
+  return c.json({ error: "Internal server error" }, 500);
+});
 
 export default app;
 

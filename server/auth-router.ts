@@ -7,6 +7,21 @@ import { createRouter, authedQuery, publicQuery } from "./middleware";
 import { findUserByEmail } from "./queries/users";
 import { verifyPassword } from "./services/password";
 import { signSessionToken } from "./kimi/session";
+import type { User } from "@db/schema";
+
+function toPublicUser(user: User) {
+  return {
+    id: user.id,
+    unionId: user.unionId,
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar,
+    role: user.role,
+    status: user.status,
+    createdAt: user.createdAt,
+    lastSignInAt: user.lastSignInAt,
+  };
+}
 
 export const authRouter = createRouter({
   localLogin: publicQuery
@@ -29,15 +44,9 @@ export const authRouter = createRouter({
           maxAge: Session.maxAgeMs / 1000,
         }),
       );
-      return {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        status: user.status,
-      };
+      return toPublicUser(user);
     }),
-  me: authedQuery.query((opts) => opts.ctx.user),
+  me: authedQuery.query((opts) => toPublicUser(opts.ctx.user)),
   logout: authedQuery.mutation(async ({ ctx }) => {
     const opts = getSessionCookieOptions(ctx.req.headers);
     ctx.resHeaders.append(
