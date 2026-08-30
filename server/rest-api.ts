@@ -17,6 +17,24 @@ const contributionSchema = z.object({
   invitedBy: z.string().max(255).optional(),
 });
 
+const personSchema = z.object({
+  name: z.string().min(2).max(255),
+  phone: z.string().min(6).max(32),
+  region: z.string().max(255).optional(),
+  nuqtaId: z.string().regex(/^NQ-[A-Z0-9]{10,32}$/).optional(),
+});
+
+const eventSchema = z.object({
+  hostPersonId: z.number().int().positive().nullable().optional(),
+  hostName: z.string().max(255).optional(),
+  eventDate: z.coerce.date(),
+  place: z.string().max(255).optional(),
+});
+
+const transitionSchema = z.object({
+  to: z.enum(["scheduled", "live", "completed", "archived"]),
+});
+
 export const restApi = new Hono<{
   Bindings: HttpBindings;
   Variables: { requestId: string };
@@ -32,8 +50,9 @@ export function openApiDocument() {
       "/auth/login": { post: { operationId: "login", requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/LoginRequest" } } } }, responses: { "200": { description: "Authenticated" }, "401": { description: "Invalid credentials" } } } },
       "/auth/me": { get: { operationId: "currentUser", security: [{ cookieAuth: [] }], responses: { "200": { description: "Current user" }, "401": { description: "Unauthenticated" } } } },
       "/auth/logout": { post: { operationId: "logout", security: [{ cookieAuth: [] }], responses: { "204": { description: "Logged out" } } } },
-      "/events": { get: { operationId: "listEvents", security: [{ cookieAuth: [] }], responses: { "200": { description: "Events visible to the current organization" } } } },
-      "/persons": { get: { operationId: "listPersons", security: [{ cookieAuth: [] }], responses: { "200": { description: "People visible to the current organization" } } } },
+      "/events": { get: { operationId: "listEvents", security: [{ cookieAuth: [] }], responses: { "200": { description: "Events visible to the current organization" } } }, post: { operationId: "createEvent", security: [{ cookieAuth: [] }], responses: { "201": { description: "Event created" } } } },
+      "/events/{id}/transition": { post: { operationId: "transitionEvent", security: [{ cookieAuth: [] }], parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }], responses: { "200": { description: "Event transitioned" } } } },
+      "/persons": { get: { operationId: "listPersons", security: [{ cookieAuth: [] }], responses: { "200": { description: "People visible to the current organization" } } }, post: { operationId: "createPerson", security: [{ cookieAuth: [] }], responses: { "201": { description: "Person created" } } } },
       "/contributions": { post: { operationId: "createContribution", security: [{ cookieAuth: [] }], requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/ContributionRequest" } } } }, responses: { "201": { description: "Contribution recorded" }, "409": { description: "Duplicate contribution" } } } },
     },
     components: {
@@ -103,6 +122,39 @@ restApi.get("/persons", async (c) => {
   const context = await currentContext(c.req.raw);
   if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
   return c.json(await appRouter.createCaller(context).persons.list());
+});
+
+restApi.post("/persons", async (c) => {
+  const parsed = personSchema.safeParse(await c.req.json().catch(() => null));
+  if (!parsed.success) return c.json({ error: "Invalid person payload" }, 400);
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  try {
+    return c.json(await appRouter.createCaller(context).persons.create(parsed.data), 201);
+  } catch (error) {
+    return c.json({ error: error instanceof Error ? error.message : "Person creation failed" }, 409);
+  }
+});
+
+restApi.post("/events", async (c) => {
+  const parsed = eventSchema.safeParse(await c.req.json().catch(() => null));
+  if (!parsed.success) return c.json({ error: "Invalid event payload" }, 400);
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  return c.json(await appRouter.createCaller(context).events.create(parsed.data), 201);
+});
+
+restApi.post("/events/:id/transition", async (c) => {
+  const id = Number(c.req.param("id"));
+  const parsed = transitionSchema.safeParse(await c.req.json().catch(() => null));
+  if (!Number.isInteger(id) || !parsed.success) return c.json({ error: "Invalid transition payload" }, 400);
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  try {
+    return c.json(await appRouter.createCaller(context).events.transition({ id, to: parsed.data.to }));
+  } catch (error) {
+    return c.json({ error: error instanceof Error ? error.message : "Transition failed" }, 400);
+  }
 });
 
 restApi.post("/contributions", async (c) => {
