@@ -1,37 +1,38 @@
-name: Daily database backup
+name: Backup NUQTA database
 
 on:
   schedule:
-    - cron: "17 2 * * *"
+    - cron: "30 2 * * *"
   workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - name: Create encrypted SQL dump
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install --yes mysql-client
+      - name: Create database backup
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          BACKUP_KEY: ${{ secrets.BACKUP_KEY }}
+          DB_HOST: ${{ secrets.NUQTA_DB_HOST }}
+          DB_PORT: ${{ secrets.NUQTA_DB_PORT }}
+          DB_USER: ${{ secrets.NUQTA_DB_USER }}
+          DB_PASSWORD: ${{ secrets.NUQTA_DB_PASSWORD }}
+          DB_NAME: ${{ secrets.NUQTA_DB_NAME }}
         run: |
-          set -euo pipefail
-          if [ -z "${DB_HOST}" ] || [ -z "${DB_PORT}" ] || [ -z "${DB_USER}" ] || [ -z "${DB_PASSWORD}" ] || [ -z "${DB_NAME}" ] || [ -z "${BACKUP_KEY}" ]; then
-            echo "Database connection secrets and BACKUP_KEY are required"
-            exit 1
-          fi
-          mkdir -p backup
-          mysqldump --host="${DB_HOST}" --port="${DB_PORT}" --user="${DB_USER}" --password="${DB_PASSWORD}" --ssl-mode=REQUIRED "${DB_NAME}" | gzip | openssl enc -aes-256-cbc -salt -pbkdf2 -pass env:BACKUP_KEY > "backup/nuqta-$(date -u +%Y-%m-%d).sql.gz.enc"
-
-      - name: Upload backup artifact
+          test -n "$DB_HOST"
+          test -n "$DB_PORT"
+          test -n "$DB_USER"
+          test -n "$DB_PASSWORD"
+          test -n "$DB_NAME"
+          umask 077
+          mysqldump \
+            --host="$DB_HOST" --port="$DB_PORT" --user="$DB_USER" \
+            --password="$DB_PASSWORD" --ssl-mode=REQUIRED \
+            --single-transaction --routines --triggers "$DB_NAME" \
+            | gzip > nuqta-backup-$(date -u +%Y-%m-%d).sql.gz
+      - name: Upload private backup artifact
         uses: actions/upload-artifact@v4
         with:
           name: nuqta-database-backup-${{ github.run_id }}
-          path: backup/*.enc
-          retention-days: 30
+          path: nuqta-backup-*.sql.gz
+          retention-days: 90

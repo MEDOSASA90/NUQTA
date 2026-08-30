@@ -23,6 +23,17 @@ Set `DATABASE_URL`, `APP_SECRET`, `APP_ID`, `OWNER_UNION_ID`, `NODE_ENV` and
 Never commit `.env` or provider credentials. Rotate any credential that has
 been exposed in a chat, terminal capture, or screenshot.
 
+## Automated backups
+
+The `database-backup.yml` workflow creates a daily compressed TiDB/MySQL dump
+and stores it as a private GitHub Actions artifact for 90 days. Add these
+repository secrets before enabling it: `NUQTA_DB_HOST`, `NUQTA_DB_PORT`,
+`NUQTA_DB_USER`, `NUQTA_DB_PASSWORD`, and `NUQTA_DB_NAME`.
+
+To restore a backup, download the artifact, decompress it, inspect the target
+database, and run `mysql --ssl-mode=REQUIRED` against the selected database.
+Restoration must be reviewed before execution because it changes live data.
+
 ## Verification
 
 ```bash
