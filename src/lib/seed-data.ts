@@ -56,14 +56,6 @@ export interface Balance {
 // ---------- أدوات تنسيق مشتركة (تعيش في lib/format.ts) ----------
 export { formatMoney, toArabicDigits, greeting, formatArabicDate, normalizeArabic } from './format'
 
-// ---------- مستخدم الجلسة (placeholder — AUTH-SLOT phase 5) ----------
-
-export const currentUser = {
-  name: 'أحمد عمر',
-  role: 'الكاتب — مدير كامل',
-  initials: 'أع',
-}
-
 // ---------- إحصائيات لوحة التحكم ----------
 
 export interface StatItem {
