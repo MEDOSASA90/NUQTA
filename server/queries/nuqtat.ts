@@ -97,7 +97,12 @@ export async function getNuqta(tenantId: number, id: number) {
 }
 
 export async function createNuqta(data: InsertNuqta): Promise<Nuqta> {
-  const [{ id }] = await getDb().insert(nuqtat).values(data).$returningId();
+  const values = {
+    ...data,
+    activeDuplicateKey:
+      data.voidedAt == null ? `${data.tenantId}:${data.eventId}:${data.payerPersonId}` : null,
+  };
+  const [{ id }] = await getDb().insert(nuqtat).values(values).$returningId();
   const created = await getNuqta(data.tenantId, id);
   if (!created) throw new Error("Failed to create nuqta");
   return created;
@@ -119,12 +124,16 @@ export async function updateNuqta(
       | "voidedAt"
       | "voidedByUserId"
       | "voidReason"
+      | "activeDuplicateKey"
     >
   >,
 ) {
+  const values = data.voidedAt
+    ? { ...data, activeDuplicateKey: null }
+    : data;
   await getDb()
     .update(nuqtat)
-    .set(data)
+    .set(values)
     .where(and(eq(nuqtat.tenantId, tenantId), eq(nuqtat.id, id)));
   return getNuqta(tenantId, id);
 }

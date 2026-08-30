@@ -172,6 +172,7 @@ export const nuqtat = mysqlTable(
     voidedAt: timestamp("voidedAt"),
     voidedByUserId: bigint("voidedByUserId", { mode: "number", unsigned: true }),
     voidReason: text("voidReason"),
+    activeDuplicateKey: varchar("activeDuplicateKey", { length: 100 }),
     /** اتعدلت بعد ما الفرح خلصت → تظهر بالحبر الأحمر */
     editedAfterDone: boolean("editedAfterDone").notNull().default(false),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -183,6 +184,7 @@ export const nuqtat = mysqlTable(
   (t) => [
     index("nuqtat_tenant_event").on(t.tenantId, t.eventId),
     index("nuqtat_tenant_payer").on(t.tenantId, t.payerPersonId),
+    uniqueIndex("nuqtat_active_duplicate").on(t.activeDuplicateKey),
   ],
 );
 

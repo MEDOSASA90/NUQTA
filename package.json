@@ -16,6 +16,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:migrate:notification": "tsx scripts/apply-notification-migration.ts",
+    "db:migrate:active-duplicate": "tsx scripts/apply-notification-migration.ts 0006_active_nuqta_duplicate.sql",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx db/seed.ts"
   },
