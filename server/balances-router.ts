@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { createRouter, tenantQuery } from "./middleware";
+import { createRouter, tenantQuery } from "./middleware.js";
 import {
   computeMatrix,
   computePairDetails,
   computePersonNetDb,
   computeSettledNotices,
-} from "./queries/balances";
+} from "./queries/balances.js";
 
 export const balancesRouter = createRouter({
   /** كل الأرصدة الثنائية في الشبكة: صافي + عدد تفاعلات + حالة */

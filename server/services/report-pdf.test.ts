@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PDFArray, PDFDict, PDFDocument, PDFName } from "pdf-lib";
-import { buildEventReportPdf, type ReportData } from "./report-pdf";
+import { buildEventReportPdf, type ReportData } from "./report-pdf.js";
 
 const sample: ReportData = {
   brand: "أحمد عمر للأفراح",

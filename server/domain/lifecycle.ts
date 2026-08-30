@@ -1,4 +1,4 @@
-import type { EventStatus, Permission } from "./types";
+import type { EventStatus, Permission } from "./types.js";
 
 const transitions: Readonly<Record<EventStatus, readonly EventStatus[]>> = {
   draft: ["scheduled"],

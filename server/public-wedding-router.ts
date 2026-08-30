@@ -5,10 +5,10 @@ import type {
   PublicWeddingRegion,
   PublicWeddingStatement,
 } from "@contracts/afrah";
-import { createRouter, publicQuery } from "./middleware";
-import { getEventByToken } from "./queries/events";
-import { listNuqtatByEvent } from "./queries/nuqtat";
-import { getTenantById } from "./queries/tenants";
+import { createRouter, publicQuery } from "./middleware.js";
+import { getEventByToken } from "./queries/events.js";
+import { listNuqtatByEvent } from "./queries/nuqtat.js";
+import { getTenantById } from "./queries/tenants.js";
 
 export const publicWeddingRouter = createRouter({
   /**

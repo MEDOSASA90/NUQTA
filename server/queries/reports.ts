@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { reports, type InsertReport, type Report } from "@db/schema";
-import { getDb } from "./connection";
+import { getDb } from "./connection.js";
 
 export async function createReportRow(
   data: Omit<InsertReport, "id">,

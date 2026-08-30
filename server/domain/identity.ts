@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
-import type { PersonIdentity } from "./types";
+import type { PersonIdentity } from "./types.js";
 
 export function normalizePhoneNumber(value: string): string {
   let digits = value.replace(/\D/g, "");

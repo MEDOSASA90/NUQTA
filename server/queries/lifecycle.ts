@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { eventAssignments, users, type Event } from "@db/schema";
-import { getDb } from "./connection";
-import type { Permission } from "../domain/types";
-import { hasPermission } from "../domain/lifecycle";
+import { getDb } from "./connection.js";
+import type { Permission } from "../domain/types.js";
+import { hasPermission } from "../domain/lifecycle.js";
 
 /** أعضاء فريق المستأجر (لتعيين مسؤولي الإدخال) */
 export async function listTenantUsers(tenantId: number) {

@@ -1,28 +1,28 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import type { EventListItem } from "@contracts/afrah";
-import { createRouter, tenantQuery } from "./middleware";
-import { writeAudit } from "./queries/audit";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { writeAudit } from "./queries/audit.js";
 import {
   createEvent,
   getEvent,
   listEvents,
   regenerateShareToken as regenerateShareTokenQuery,
   updateEvent,
-} from "./queries/events";
+} from "./queries/events.js";
 import {
   counterpartiesOf,
   listNuqtatByEvent,
   listTenantNuqtatJoined,
-} from "./queries/nuqtat";
-import { getPerson } from "./queries/persons";
-import { expenseSummary } from "./queries/expenses";
+} from "./queries/nuqtat.js";
+import { getPerson } from "./queries/persons.js";
+import { expenseSummary } from "./queries/expenses.js";
 import {
   listAssignees,
   listTenantUsers,
   setAssignees as setAssigneesQuery,
-} from "./queries/lifecycle";
-import { assertEventTransition } from "./domain/lifecycle";
+} from "./queries/lifecycle.js";
+import { assertEventTransition } from "./domain/lifecycle.js";
 
 const dateInput = z.coerce.date();
 

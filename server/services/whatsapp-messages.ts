@@ -2,7 +2,7 @@
  * قوالب رسائل واتساب بالعامية المصرية — الأنظمة أ (تذكير) وب (تأكيد/تصحيح).
  */
 import type { SettlementPreview } from "@contracts/afrah";
-import { formatDateAr, formatMoneyAr } from "./whatsapp";
+import { formatDateAr, formatMoneyAr } from "./whatsapp.js";
 
 /** النظام ب — تأكيد فوري بعد تسجيل النقطة */
 export function composeConfirmationBody(params: {

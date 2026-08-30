@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeArabic, normalizePhone, searchPersons } from "./person-search";
+import { normalizeArabic, normalizePhone, searchPersons } from "./person-search.js";
 
 const persons = [
   { id: 1, name: "محمد عبد الله السيد", phone: "01002345678", region: "المنصورة" },

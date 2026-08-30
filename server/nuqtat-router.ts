@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createRouter, tenantQuery } from "./middleware";
-import { writeAudit } from "./queries/audit";
-import { computeSettlement } from "./queries/balance-core";
-import { getEvent } from "./queries/events";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { writeAudit } from "./queries/audit.js";
+import { computeSettlement } from "./queries/balance-core.js";
+import { getEvent } from "./queries/events.js";
 import {
   createNuqta,
   getNuqta,
@@ -11,15 +11,15 @@ import {
   listRecentNuqtat,
   listTenantNuqtatJoined,
   updateNuqta,
-} from "./queries/nuqtat";
-import { getPerson } from "./queries/persons";
-import { getTenantById } from "./queries/tenants";
-import { assertCanEditLedger, assertCanRecord } from "./queries/lifecycle";
-import { sendWhatsapp } from "./services/whatsapp";
+} from "./queries/nuqtat.js";
+import { getPerson } from "./queries/persons.js";
+import { getTenantById } from "./queries/tenants.js";
+import { assertCanEditLedger, assertCanRecord } from "./queries/lifecycle.js";
+import { sendWhatsapp } from "./services/whatsapp.js";
 import {
   composeConfirmationBody,
   composeCorrectionBody,
-} from "./services/whatsapp-messages";
+} from "./services/whatsapp-messages.js";
 
 const amountSchema = z.number().int().positive("المبلغ لازم يكون أكبر من صفر");
 

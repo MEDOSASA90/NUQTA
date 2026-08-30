@@ -8,7 +8,7 @@ import {
   findSettlements,
   nuqtatBetween,
   type NuqtaLike,
-} from "./balance-core";
+} from "./balance-core.js";
 
 let seq = 0;
 function n(

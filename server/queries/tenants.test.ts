@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { decideTenantLinkForNewUser } from "./tenants";
+import { decideTenantLinkForNewUser } from "./tenants.js";
 
 /**
  * منطق ربط المستخدم الجديد (بدون عضوية) بمستأجر — resolveTenantForUser:

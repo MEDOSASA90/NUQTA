@@ -1,7 +1,7 @@
 import { and, asc, desc, eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { events, type Event, type InsertEvent } from "@db/schema";
-import { getDb } from "./connection";
+import { getDb } from "./connection.js";
 
 export async function listEvents(tenantId: number): Promise<Event[]> {
   return getDb()

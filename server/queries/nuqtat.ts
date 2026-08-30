@@ -6,8 +6,8 @@ import {
   type InsertNuqta,
   type Nuqta,
 } from "@db/schema";
-import { getDb } from "./connection";
-import type { NuqtaLike } from "./balance-core";
+import { getDb } from "./connection.js";
+import type { NuqtaLike } from "./balance-core.js";
 
 /** نقطة + بيانات محلولة (الدافع وصاحب الفرح) لحسابات الأرصدة */
 export type NuqtaJoined = NuqtaLike & {

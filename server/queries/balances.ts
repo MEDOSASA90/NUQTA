@@ -13,9 +13,9 @@ import {
   computePersonNet,
   findSettlements,
   nuqtatBetween,
-} from "./balance-core";
-import { listTenantNuqtatJoined, type NuqtaJoined } from "./nuqtat";
-import { listPersons } from "./persons";
+} from "./balance-core.js";
+import { listTenantNuqtatJoined, type NuqtaJoined } from "./nuqtat.js";
+import { listPersons } from "./persons.js";
 
 function eventLabelOf(n: NuqtaJoined): string {
   return `فرحة ${n.hostName}`;

@@ -5,15 +5,15 @@
  */
 import type { BalanceRow, BotReply, PersonNet } from "@contracts/afrah";
 import type { Person } from "@db/schema";
-import { computePersonNet, computeSettlement } from "../queries/balance-core";
-import { listTenantNuqtatJoined } from "../queries/nuqtat";
-import { findPersonByPhoneAnyTenant, listPersons } from "../queries/persons";
-import { listEvents } from "../queries/events";
-import { getTenantById } from "../queries/tenants";
-import { normalizeArabic, normalizePhone } from "../queries/person-search";
-import { computeAllPairs } from "../queries/balance-core";
-import { logWhatsappMessage } from "../queries/whatsapp-log";
-import { sendWhatsapp, formatDateAr, formatMoneyAr } from "./whatsapp";
+import { computePersonNet, computeSettlement } from "../queries/balance-core.js";
+import { listTenantNuqtatJoined } from "../queries/nuqtat.js";
+import { findPersonByPhoneAnyTenant, listPersons } from "../queries/persons.js";
+import { listEvents } from "../queries/events.js";
+import { getTenantById } from "../queries/tenants.js";
+import { normalizeArabic, normalizePhone } from "../queries/person-search.js";
+import { computeAllPairs } from "../queries/balance-core.js";
+import { logWhatsappMessage } from "../queries/whatsapp-log.js";
+import { sendWhatsapp, formatDateAr, formatMoneyAr } from "./whatsapp.js";
 
 // ─── الأنواع ────────────────────────────────────────────────────────────────
 

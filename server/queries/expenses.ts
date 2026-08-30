@@ -1,6 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { expenses, users, type Expense, type InsertExpense } from "@db/schema";
-import { getDb } from "./connection";
+import { getDb } from "./connection.js";
 
 export async function createExpense(
   data: Omit<InsertExpense, "id">,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { calculateBalance, isDuplicateEntry } from "./ledger";
-import type { LedgerEntry } from "./types";
+import { calculateBalance, isDuplicateEntry } from "./ledger.js";
+import type { LedgerEntry } from "./types.js";
 
 const entry = (id: number, eventId: number, payerNuqtaId: string, hostNuqtaId: string, amount: number): LedgerEntry => ({
   id,

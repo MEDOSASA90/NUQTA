@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createNuqtaId, normalizePhoneNumber, sameIdentity } from "./identity";
+import { createNuqtaId, normalizePhoneNumber, sameIdentity } from "./identity.js";
 
 describe("central identity", () => {
   it("normalizes Egyptian phone numbers", () => {

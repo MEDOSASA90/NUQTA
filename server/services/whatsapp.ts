@@ -9,7 +9,7 @@ import type { WhatsappMessage } from "@db/schema";
 import {
   logWhatsappMessage,
   updateWhatsappStatus,
-} from "../queries/whatsapp-log";
+} from "../queries/whatsapp-log.js";
 
 const WA_TOKEN = process.env.WHATSAPP_TOKEN ?? "";
 const WA_PHONE_ID = process.env.WHATSAPP_PHONE_ID ?? "";

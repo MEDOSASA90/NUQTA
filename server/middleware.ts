@@ -1,7 +1,7 @@
 import { ErrorMessages } from "@contracts/constants";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import type { TrpcContext } from "./context";
+import type { TrpcContext } from "./context.js";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
@@ -48,7 +48,7 @@ export const adminQuery = authedQuery.use(requireRole("admin"));
  */
 const requireTenant = t.middleware(async (opts) => {
   const { ctx, next } = opts;
-  const { resolveTenantForUser } = await import("./queries/tenants");
+  const { resolveTenantForUser } = await import("./queries/tenants.js");
   // user مضمون هنا لأن requireTenant يُربط بعد requireAuth دائمًا
   const user = ctx.user!;
   const { tenant, membership } = await resolveTenantForUser(user);

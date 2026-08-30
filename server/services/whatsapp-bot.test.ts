@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { BalanceRow } from "@contracts/afrah";
-import { composeBotReply, type BotContext } from "./whatsapp-bot";
+import { composeBotReply, type BotContext } from "./whatsapp-bot.js";
 
 function row(partial: Partial<BalanceRow> & Pick<BalanceRow, "personAId" | "personBId">): BalanceRow {
   return {

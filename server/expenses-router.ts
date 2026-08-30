@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createRouter, tenantQuery } from "./middleware";
-import { writeAudit } from "./queries/audit";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { writeAudit } from "./queries/audit.js";
 import {
   createExpense,
   deleteExpense,
@@ -9,9 +9,9 @@ import {
   getExpense,
   listExpensesByEvent,
   updateExpense,
-} from "./queries/expenses";
-import { getEvent } from "./queries/events";
-import { assertCanRecord } from "./queries/lifecycle";
+} from "./queries/expenses.js";
+import { getEvent } from "./queries/events.js";
+import { assertCanRecord } from "./queries/lifecycle.js";
 
 const amountSchema = z.number().int().positive("المبلغ لازم يكون أكبر من صفر");
 

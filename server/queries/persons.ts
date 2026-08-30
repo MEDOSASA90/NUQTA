@@ -1,8 +1,8 @@
 import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { persons, type InsertPerson, type Person } from "@db/schema";
-import { getDb } from "./connection";
-import { searchPersons } from "./person-search";
+import { getDb } from "./connection.js";
+import { searchPersons } from "./person-search.js";
 
 export async function listPersons(tenantId: number): Promise<Person[]> {
   return getDb()

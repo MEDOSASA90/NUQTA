@@ -4,7 +4,7 @@ import {
   type InsertWhatsappMessage,
   type WhatsappMessage,
 } from "@db/schema";
-import { getDb } from "./connection";
+import { getDb } from "./connection.js";
 
 export async function logWhatsappMessage(
   data: Omit<InsertWhatsappMessage, "id">,

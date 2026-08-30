@@ -2,11 +2,11 @@ import * as cookie from "cookie";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { Session } from "@contracts/constants";
-import { getSessionCookieOptions } from "./lib/cookies";
-import { createRouter, authedQuery, publicQuery } from "./middleware";
-import { findUserByEmail } from "./queries/users";
-import { verifyPassword } from "./services/password";
-import { signSessionToken } from "./kimi/session";
+import { getSessionCookieOptions } from "./lib/cookies.js";
+import { createRouter, authedQuery, publicQuery } from "./middleware.js";
+import { findUserByEmail } from "./queries/users.js";
+import { verifyPassword } from "./services/password.js";
+import { signSessionToken } from "./kimi/session.js";
 import type { User } from "@db/schema";
 
 function toPublicUser(user: User) {

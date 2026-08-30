@@ -1,4 +1,4 @@
-import { normalizeArabicText } from "./identity";
+import { normalizeArabicText } from "./identity.js";
 
 export function canonicalRegionName(value: string): string {
   const name = normalizeArabicText(value);

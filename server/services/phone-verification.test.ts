@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canAttemptVerification, createVerificationCode, verificationExpiresAt } from "./phone-verification";
+import { canAttemptVerification, createVerificationCode, verificationExpiresAt } from "./phone-verification.js";
 
 describe("phone verification", () => {
   it("creates six digit codes and expires them", () => {

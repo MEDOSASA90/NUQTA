@@ -2,18 +2,18 @@ import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import type { HttpBindings } from "@hono/node-server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { appRouter } from "./router";
-import { createContext } from "./context";
-import { env } from "./lib/env";
-import { authenticateRequest, createOAuthCallbackHandler } from "./kimi/auth";
+import { appRouter } from "./router.js";
+import { createContext } from "./context.js";
+import { env } from "./lib/env.js";
+import { authenticateRequest, createOAuthCallbackHandler } from "./kimi/auth.js";
 import { Paths } from "@contracts/constants";
-import { sendDailyReminders } from "./services/reminders";
-import { handleBotMessage } from "./services/whatsapp-bot";
-import { getReportById } from "./queries/reports";
-import { getEvent } from "./queries/events";
-import { isMemberOfTenant } from "./queries/tenants";
-import { reportFilePath } from "./services/report-pdf";
-import { getDb } from "./queries/connection";
+import { sendDailyReminders } from "./services/reminders.js";
+import { handleBotMessage } from "./services/whatsapp-bot.js";
+import { getReportById } from "./queries/reports.js";
+import { getEvent } from "./queries/events.js";
+import { isMemberOfTenant } from "./queries/tenants.js";
+import { reportFilePath } from "./services/report-pdf.js";
+import { getDb } from "./queries/connection.js";
 import { sql } from "drizzle-orm";
 
 const app = new Hono<{ Bindings: HttpBindings }>();
@@ -164,7 +164,7 @@ app.onError((error, c) => {
 export default app;
 
 if (env.isProduction) {
-  const { serveStaticFiles } = await import("./lib/vite");
+  const { serveStaticFiles } = await import("./lib/vite.js");
   serveStaticFiles(app);
 
   if (!process.env.VERCEL) {

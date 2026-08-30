@@ -1,4 +1,4 @@
-import type { Balance, LedgerEntry } from "./types";
+import type { Balance, LedgerEntry } from "./types.js";
 
 export function calculateBalance(
   entries: readonly LedgerEntry[],

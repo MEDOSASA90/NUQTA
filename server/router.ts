@@ -1,17 +1,17 @@
-import { authRouter } from "./auth-router";
-import { createRouter, publicQuery } from "./middleware";
-import { personsRouter } from "./persons-router";
-import { eventsRouter } from "./events-router";
-import { nuqtatRouter } from "./nuqtat-router";
-import { balancesRouter } from "./balances-router";
-import { auditRouter } from "./audit-router";
-import { whatsappRouter } from "./whatsapp-router";
-import { reportsRouter } from "./reports-router";
-import { dashboardRouter } from "./dashboard-router";
-import { publicWeddingRouter } from "./public-wedding-router";
-import { expensesRouter } from "./expenses-router";
-import { regionsRouter } from "./regions-router";
-import { adminRouter } from "./admin-router";
+import { authRouter } from "./auth-router.js";
+import { createRouter, publicQuery } from "./middleware.js";
+import { personsRouter } from "./persons-router.js";
+import { eventsRouter } from "./events-router.js";
+import { nuqtatRouter } from "./nuqtat-router.js";
+import { balancesRouter } from "./balances-router.js";
+import { auditRouter } from "./audit-router.js";
+import { whatsappRouter } from "./whatsapp-router.js";
+import { reportsRouter } from "./reports-router.js";
+import { dashboardRouter } from "./dashboard-router.js";
+import { publicWeddingRouter } from "./public-wedding-router.js";
+import { expensesRouter } from "./expenses-router.js";
+import { regionsRouter } from "./regions-router.js";
+import { adminRouter } from "./admin-router.js";
 
 export const appRouter = createRouter({
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),

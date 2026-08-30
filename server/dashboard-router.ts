@@ -1,10 +1,10 @@
-import { createRouter, tenantQuery } from "./middleware";
+import { createRouter, tenantQuery } from "./middleware.js";
 import type { DashboardStats } from "@contracts/afrah";
-import { computeNetworkNet } from "./queries/balance-core";
-import { listEvents } from "./queries/events";
-import { listTenantNuqtatJoined } from "./queries/nuqtat";
-import { listPersons } from "./queries/persons";
-import { listWhatsappMessages } from "./queries/whatsapp-log";
+import { computeNetworkNet } from "./queries/balance-core.js";
+import { listEvents } from "./queries/events.js";
+import { listTenantNuqtatJoined } from "./queries/nuqtat.js";
+import { listPersons } from "./queries/persons.js";
+import { listWhatsappMessages } from "./queries/whatsapp-log.js";
 
 export const dashboardRouter = createRouter({
   /** إحصائيات لوحة التحكم */

@@ -1,7 +1,7 @@
 import { asc, eq } from "drizzle-orm";
 import { regions, type Region } from "@db/schema";
-import { getDb } from "./connection";
-import { canonicalRegionName, regionKey } from "../domain/regions";
+import { getDb } from "./connection.js";
+import { canonicalRegionName, regionKey } from "../domain/regions.js";
 
 export async function listRegions(): Promise<Region[]> {
   return getDb().select().from(regions).orderBy(asc(regions.name));

@@ -2,13 +2,13 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { DEFAULT_REMINDER_DAYS } from "@contracts/afrah";
 import type { TenantSettings } from "@db/schema";
-import { createRouter, tenantQuery } from "./middleware";
-import { getEvent } from "./queries/events";
-import { updateTenantSettings } from "./queries/tenants";
-import { listWhatsappMessages } from "./queries/whatsapp-log";
-import { handleBotMessage } from "./services/whatsapp-bot";
-import { isCloudConfigured } from "./services/whatsapp";
-import { sendEventReminders } from "./services/reminders";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { getEvent } from "./queries/events.js";
+import { updateTenantSettings } from "./queries/tenants.js";
+import { listWhatsappMessages } from "./queries/whatsapp-log.js";
+import { handleBotMessage } from "./services/whatsapp-bot.js";
+import { isCloudConfigured } from "./services/whatsapp.js";
+import { sendEventReminders } from "./services/reminders.js";
 
 export const whatsappRouter = createRouter({
   /** سجل رسائل واتساب (الأنظمة أ/ب/ج) */

@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createRouter, tenantQuery } from "./middleware";
-import { writeAudit } from "./queries/audit";
-import { getEvent } from "./queries/events";
-import { getReport, listReports } from "./queries/reports";
-import { generateEventReport } from "./services/report-pdf";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { writeAudit } from "./queries/audit.js";
+import { getEvent } from "./queries/events.js";
+import { getReport, listReports } from "./queries/reports.js";
+import { generateEventReport } from "./services/report-pdf.js";
 
 export const reportsRouter = createRouter({
   /** يولّد PDF رسمي للفرحة ويخزنه ويعيد سجل التقرير (فيه fileUrl) */

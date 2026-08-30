@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertEventTransition, canRecordNuqta, hasPermission } from "./lifecycle";
+import { assertEventTransition, canRecordNuqta, hasPermission } from "./lifecycle.js";
 
 describe("event lifecycle", () => {
   it("allows only the ordered lifecycle", () => {

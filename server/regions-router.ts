@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { createRouter, tenantQuery } from "./middleware";
-import { getOrCreateRegion, listRegions } from "./queries/regions";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { getOrCreateRegion, listRegions } from "./queries/regions.js";
 
 export const regionsRouter = createRouter({
   list: tenantQuery.query(() => listRegions()),

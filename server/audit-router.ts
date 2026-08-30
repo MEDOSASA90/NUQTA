@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { createRouter, tenantQuery } from "./middleware";
-import { listAudit } from "./queries/audit";
-import { listTenantNuqtatJoined } from "./queries/nuqtat";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { listAudit } from "./queries/audit.js";
+import { listTenantNuqtatJoined } from "./queries/nuqtat.js";
 
 export const auditRouter = createRouter({
   /**

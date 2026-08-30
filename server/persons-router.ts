@@ -2,10 +2,10 @@ import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { phoneVerificationChallenges } from "@db/schema";
-import { createRouter, tenantQuery } from "./middleware";
-import { writeAudit } from "./queries/audit";
-import { computeMatrix, computePersonNetDb } from "./queries/balances";
-import { listTenantNuqtatJoined } from "./queries/nuqtat";
+import { createRouter, tenantQuery } from "./middleware.js";
+import { writeAudit } from "./queries/audit.js";
+import { computeMatrix, computePersonNetDb } from "./queries/balances.js";
+import { listTenantNuqtatJoined } from "./queries/nuqtat.js";
 import {
   createPerson,
   deletePerson,
@@ -17,17 +17,17 @@ import {
   searchGlobalPersons,
   searchTenantPersons,
   updatePerson,
-} from "./queries/persons";
-import { normalizePhone } from "./queries/person-search";
-import { getOrCreateRegion } from "./queries/regions";
-import { getDb } from "./queries/connection";
-import { sendWhatsapp } from "./services/whatsapp";
+} from "./queries/persons.js";
+import { normalizePhone } from "./queries/person-search.js";
+import { getOrCreateRegion } from "./queries/regions.js";
+import { getDb } from "./queries/connection.js";
+import { sendWhatsapp } from "./services/whatsapp.js";
 import {
   canAttemptVerification,
   createVerificationCode,
   hashVerificationCode,
   verificationExpiresAt,
-} from "./services/phone-verification";
+} from "./services/phone-verification.js";
 
 export const personsRouter = createRouter({
   /** بحث فوري بالاسم/تليفون/منطقة — يميّز المتشابهين بالاسم */

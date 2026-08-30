@@ -3,9 +3,9 @@ import { z } from "zod";
 import { randomUUID } from "node:crypto";
 import { TRPCError } from "@trpc/server";
 import { users, tenants, tenantMembers } from "@db/schema";
-import { adminQuery, createRouter } from "./middleware";
-import { getDb } from "./queries/connection";
-import { hashPassword } from "./services/password";
+import { adminQuery, createRouter } from "./middleware.js";
+import { getDb } from "./queries/connection.js";
+import { hashPassword } from "./services/password.js";
 
 export const adminRouter = createRouter({
   createUser: adminQuery

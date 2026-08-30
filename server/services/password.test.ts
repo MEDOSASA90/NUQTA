@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hashPassword, verifyPassword } from "./password";
+import { hashPassword, verifyPassword } from "./password.js";
 
 describe("local password authentication", () => {
   it("hashes and verifies passwords without storing plaintext", () => {

@@ -1,6 +1,6 @@
 import { and, desc, eq, gte, lte, type SQL } from "drizzle-orm";
 import { auditLog, type InsertAuditLogEntry } from "@db/schema";
-import { getDb } from "./connection";
+import { getDb } from "./connection.js";
 
 export async function writeAudit(entry: Omit<InsertAuditLogEntry, "id">) {
   await getDb().insert(auditLog).values(entry);

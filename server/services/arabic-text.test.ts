@@ -2,7 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import fontkit from "@pdf-lib/fontkit";
 import { describe, expect, it } from "vitest";
-import { toPdfDrawableText, toVisualArabic, wrapArabic } from "./arabic-text";
+import { toPdfDrawableText, toVisualArabic, wrapArabic } from "./arabic-text.js";
 
 /**
  * يحاكي ما تفعله pdf-lib بالضبط عند drawText:

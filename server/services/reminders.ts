@@ -4,14 +4,14 @@
  * وأيضًا متاح يدويًا للاختبار عبر whatsapp.sendRemindersNow.
  */
 import { DEFAULT_REMINDER_DAYS } from "@contracts/afrah";
-import { eventsWithinDays, getEvent } from "../queries/events";
-import { listPersons } from "../queries/persons";
-import { counterpartiesOf, listTenantNuqtatJoined } from "../queries/nuqtat";
-import { getTenantById, listTenants } from "../queries/tenants";
-import { reminderSentToday } from "../queries/whatsapp-log";
-import { computeSettlement } from "../queries/balance-core";
-import { sendWhatsapp } from "./whatsapp";
-import { composeReminderBody } from "./whatsapp-messages";
+import { eventsWithinDays, getEvent } from "../queries/events.js";
+import { listPersons } from "../queries/persons.js";
+import { counterpartiesOf, listTenantNuqtatJoined } from "../queries/nuqtat.js";
+import { getTenantById, listTenants } from "../queries/tenants.js";
+import { reminderSentToday } from "../queries/whatsapp-log.js";
+import { computeSettlement } from "../queries/balance-core.js";
+import { sendWhatsapp } from "./whatsapp.js";
+import { composeReminderBody } from "./whatsapp-messages.js";
 
 export type ReminderSummary = {
   tenantId: number;

@@ -1,7 +1,7 @@
 import { and, asc, eq } from "drizzle-orm";
 import { tenantMembers, tenants, type Tenant, type TenantMember } from "@db/schema";
-import { getDb } from "./connection";
-import { env } from "../lib/env";
+import { getDb } from "./connection.js";
+import { env } from "../lib/env.js";
 
 /**
  * قرار ربط مستخدم جديد (بدون أي عضوية) بمستأجر — دالة نقية قابلة للاختبار:

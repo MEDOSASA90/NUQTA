@@ -22,14 +22,14 @@ import {
   type RGB,
 } from "pdf-lib";
 import type { Report } from "@db/schema";
-import { getEvent } from "../queries/events";
-import { listExpensesByEvent } from "../queries/expenses";
-import { listNuqtatByEvent, listTenantNuqtatJoined } from "../queries/nuqtat";
-import { listPersons } from "../queries/persons";
-import { getTenantById } from "../queries/tenants";
-import { createReportRow, deleteReportRow, updateReportFileUrl } from "../queries/reports";
-import { toPdfDrawableText, wrapArabic } from "./arabic-text";
-import { formatDateAr, formatMoneyAr } from "./whatsapp";
+import { getEvent } from "../queries/events.js";
+import { listExpensesByEvent } from "../queries/expenses.js";
+import { listNuqtatByEvent, listTenantNuqtatJoined } from "../queries/nuqtat.js";
+import { listPersons } from "../queries/persons.js";
+import { getTenantById } from "../queries/tenants.js";
+import { createReportRow, deleteReportRow, updateReportFileUrl } from "../queries/reports.js";
+import { toPdfDrawableText, wrapArabic } from "./arabic-text.js";
+import { formatDateAr, formatMoneyAr } from "./whatsapp.js";
 
 const A4_W = 595.28;
 const A4_H = 841.89;
