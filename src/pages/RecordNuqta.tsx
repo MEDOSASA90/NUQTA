@@ -116,7 +116,6 @@ function RecordNuqtaInner() {
     { query: personSearch.trim(), limit: 10 },
     { enabled: personSearch.trim().length >= 2 },
   )
-  const matrixQ = trpc.balances.matrix.useQuery()
   const recentQ = trpc.nuqtat.listRecent.useQuery({ limit: 5 })
 
   const events = useMemo(() => eventsQ.data ?? [], [eventsQ.data])
@@ -136,6 +135,7 @@ function RecordNuqtaInner() {
   const [debouncedAmount, setDebouncedAmount] = useState<number | null>(null)
   const amountRef = useRef<HTMLInputElement>(null)
   const lastSubmittedAmount = useRef(0)
+  const matrixQ = trpc.balances.matrix.useQuery(undefined, { enabled: Boolean(payer) })
 
   /* الفرح المختار: اليدوي أو أقرب قادمة */
   const selectedEvent = useMemo(() => {
@@ -194,7 +194,7 @@ function RecordNuqtaInner() {
   const amount = useMemo(() => parseAmountInput(amountRaw), [amountRaw])
   const localPayerId = payer && !payer.id.startsWith('global:') ? Number(payer.id) : 0
   useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedAmount(amount), 350)
+    const t = window.setTimeout(() => setDebouncedAmount(amount), 150)
     return () => window.clearTimeout(t)
   }, [amount])
 
@@ -230,7 +230,7 @@ function RecordNuqtaInner() {
           : `اتسجلت نقطة ${formatMoney(savedAmount)} ج.م ✓ (من غير إشعار واتساب)`,
       )
       clearForm()
-      await Promise.all([
+      void Promise.all([
         utils.nuqtat.listRecent.invalidate(),
         utils.nuqtat.previewSettlement.invalidate(),
         utils.events.list.invalidate(),

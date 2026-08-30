@@ -24,7 +24,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { useAuth } from '@/hooks/useAuth'
 import { LOGIN_PATH } from '@/const'
-import { activeWeddingToday, currentUser } from '@/lib/seed-data'
+import { activeWeddingToday } from '@/lib/seed-data'
 
 /**
  * هيكل التطبيق (design.md §٧ و§٨.١) —
@@ -163,11 +163,11 @@ function Sidebar() {
         {!collapsed && (
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-100 font-kufi font-bold text-[13px] text-primary-700">
-              {currentUser.initials}
+              {(user?.name ?? user?.email ?? 'م').trim().charAt(0)}
             </span>
             <div className="min-w-0">
-              <div className="text-[13px] font-semibold text-ink-900 truncate">{currentUser.name}</div>
-              <div className="text-[11px] text-ink-500 truncate">{currentUser.role}</div>
+              <div className="text-[13px] font-semibold text-ink-900 truncate">{user?.name ?? user?.email ?? 'مستخدم'}</div>
+              <div className="text-[11px] text-ink-500 truncate">{user?.role === 'admin' ? 'مدير النظام' : 'كاتب'}</div>
             </div>
           </div>
         )}

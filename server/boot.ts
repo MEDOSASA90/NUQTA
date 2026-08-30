@@ -12,7 +12,7 @@ import { handleBotMessage } from "./services/whatsapp-bot.js";
 import { getReportById } from "./queries/reports.js";
 import { getEvent } from "./queries/events.js";
 import { isMemberOfTenant } from "./queries/tenants.js";
-import { reportFilePath } from "./services/report-pdf.js";
+import { generateEventReport, reportFilePath } from "./services/report-pdf.js";
 import { getDb } from "./queries/connection.js";
 import { sql } from "drizzle-orm";
 
@@ -120,9 +120,21 @@ app.get("/api/reports/file/:id", async (c) => {
   if (!(await isMemberOfTenant(user.id, report.tenantId))) {
     return c.json({ error: "Forbidden" }, 403);
   }
-  const file = await import("fs/promises")
-    .then((fs) => fs.readFile(reportFilePath(report.id)))
-    .catch(() => null);
+  const fs = await import("fs/promises");
+  let filePath = reportFilePath(report.id);
+  let file = await fs.readFile(filePath).catch(() => null);
+
+  // Vercel's filesystem is ephemeral. Rebuild an older report when its temporary
+  // PDF is no longer available instead of returning a blank/404 response.
+  if (!file) {
+    try {
+      const regenerated = await generateEventReport(report.tenantId, report.eventId);
+      filePath = reportFilePath(regenerated.id);
+      file = await fs.readFile(filePath).catch(() => null);
+    } catch (error) {
+      console.error("[reports] failed to regenerate missing PDF", error);
+    }
+  }
   if (!file) return c.json({ error: "File missing" }, 404);
   // اسم ملف عربي منطقي: filename* بترميز UTF-8 (RFC 5987) يفضّله المتصفح،
   // مع filename لاتيني احتياطي للعملاء القدامى. inline ليفتح داخل المتصفح

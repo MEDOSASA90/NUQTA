@@ -100,8 +100,8 @@ async function seed() {
   await db
     .insert(users)
     .values({
-      unionId: "seed-ahmed-omar",
-      name: "أحمد عمر",
+      unionId: "seed-mahmoud-admin",
+      name: "محمود خميس",
       email: "admin@nuqta.local",
       passwordHash: hashPassword("Admin@12345"),
       role: "admin",
@@ -109,15 +109,15 @@ async function seed() {
     })
     .onDuplicateKeyUpdate({ set: { name: "أحمد عمر", passwordHash: hashPassword("Admin@12345") } });
   const ownerRows = await db.select().from(users);
-  const ownerUser = ownerRows.find((u) => u.unionId === "seed-ahmed-omar");
+  const ownerUser = ownerRows.find((u) => u.unionId === "seed-mahmoud-admin");
   if (!ownerUser) throw new Error("seed user missing");
   await db.update(users).set({ email: "admin@nuqta.local" }).where(eq(users.id, ownerUser.id));
 
   await db
     .insert(users)
     .values({
-      unionId: "seed-scribe",
-      name: "كاتب التجربة",
+      unionId: "seed-ahmed-omar",
+      name: "أحمد عمر",
       email: "scribe@nuqta.local",
       passwordHash: hashPassword("Scribe@12345"),
       role: "user",
@@ -125,7 +125,7 @@ async function seed() {
     })
     .onDuplicateKeyUpdate({ set: { passwordHash: hashPassword("Scribe@12345"), name: "كاتب التجربة" } });
   const writerRows = await db.select().from(users);
-  const writerUser = writerRows.find((u) => u.unionId === "seed-scribe");
+  const writerUser = writerRows.find((u) => u.unionId === "seed-ahmed-omar");
   if (!writerUser) throw new Error("seed writer missing");
 
   const [{ id: tenantId }] = await db
