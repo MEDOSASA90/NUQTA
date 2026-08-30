@@ -15,9 +15,25 @@ import { isMemberOfTenant } from "./queries/tenants.js";
 import { generateEventReport, reportFilePath } from "./services/report-pdf.js";
 import { getDb } from "./queries/connection.js";
 import { sql } from "drizzle-orm";
+import { randomUUID } from "node:crypto";
 import { restApi } from "./rest-api.js";
 
-const app = new Hono<{ Bindings: HttpBindings }>();
+type AppEnvironment = {
+  Bindings: HttpBindings;
+  Variables: { requestId: string };
+};
+
+const app = new Hono<AppEnvironment>();
+
+app.use("*", async (c, next) => {
+  const requestId = c.req.header("x-request-id")?.slice(0, 100) || randomUUID();
+  c.set("requestId", requestId);
+  c.header("x-request-id", requestId);
+  c.header("x-content-type-options", "nosniff");
+  c.header("x-frame-options", "DENY");
+  c.header("referrer-policy", "strict-origin-when-cross-origin");
+  await next();
+});
 
 app.get("/api/health", async (c) => {
   try {
@@ -26,6 +42,7 @@ app.get("/api/health", async (c) => {
   } catch (error) {
     console.error(JSON.stringify({
       event: "health_check_failed",
+      requestId: c.get("requestId"),
       message: error instanceof Error ? error.message : "unknown error",
     }));
     return c.json({ ok: false, database: "down" }, 503);
@@ -169,6 +186,7 @@ app.all("/api/*", (c) => c.json({ error: "Not Found" }, 404));
 app.onError((error, c) => {
   console.error(JSON.stringify({
     event: "unhandled_request_error",
+    requestId: c.get("requestId"),
     method: c.req.method,
     path: c.req.path,
     message: error.message,

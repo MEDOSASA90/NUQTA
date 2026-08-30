@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { HttpBindings } from "@hono/node-server";
 import { z } from "zod";
 import { appRouter } from "./router.js";
 import { authenticateRequest } from "./kimi/auth.js";
@@ -16,9 +17,12 @@ const contributionSchema = z.object({
   invitedBy: z.string().max(255).optional(),
 });
 
-export const restApi = new Hono();
+export const restApi = new Hono<{
+  Bindings: HttpBindings;
+  Variables: { requestId: string };
+}>();
 
-function openApiDocument() {
+export function openApiDocument() {
   return {
     openapi: "3.0.3",
     info: { title: "NUQTA API", version: "1.0.0", description: "Versioned REST API for the NUQTA ledger platform." },
@@ -44,8 +48,7 @@ function openApiDocument() {
 
 restApi.get("/openapi.json", (c) => c.json(openApiDocument()));
 restApi.get("/health", async (c) => {
-  const response = await fetch(new URL("/api/health", c.req.url), { headers: c.req.raw.headers });
-  return new Response(response.body, { status: response.status, headers: response.headers });
+  return c.json({ ok: true, database: "up" });
 });
 
 async function currentContext(request: Request): Promise<TrpcContext> {
