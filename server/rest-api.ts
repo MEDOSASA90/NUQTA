@@ -4,6 +4,8 @@ import { z } from "zod";
 import { appRouter } from "./router.js";
 import { authenticateRequest } from "./kimi/auth.js";
 import type { TrpcContext } from "./context.js";
+import { getDb } from "./queries/connection.js";
+import { sql } from "drizzle-orm";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -54,6 +56,12 @@ export function openApiDocument() {
       "/events/{id}/transition": { post: { operationId: "transitionEvent", security: [{ cookieAuth: [] }], parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }], responses: { "200": { description: "Event transitioned" } } } },
       "/persons": { get: { operationId: "listPersons", security: [{ cookieAuth: [] }], responses: { "200": { description: "People visible to the current organization" } } }, post: { operationId: "createPerson", security: [{ cookieAuth: [] }], responses: { "201": { description: "Person created" } } } },
       "/contributions": { post: { operationId: "createContribution", security: [{ cookieAuth: [] }], requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/ContributionRequest" } } } }, responses: { "201": { description: "Contribution recorded" }, "409": { description: "Duplicate contribution" } } } },
+      "/balances": { get: { operationId: "listBalances", security: [{ cookieAuth: [] }], responses: { "200": { description: "Relationship balances" } } } },
+      "/balances/pair": { get: { operationId: "getPairBalance", security: [{ cookieAuth: [] }], parameters: [{ name: "a", in: "query", required: true, schema: { type: "integer" } }, { name: "b", in: "query", required: true, schema: { type: "integer" } }], responses: { "200": { description: "Pair transaction details" } } } },
+      "/audit": { get: { operationId: "listAudit", security: [{ cookieAuth: [] }], responses: { "200": { description: "Tenant audit log" } } } },
+      "/reports": { get: { operationId: "listReports", security: [{ cookieAuth: [] }], responses: { "200": { description: "Generated reports" } } }, post: { operationId: "generateReport", security: [{ cookieAuth: [] }], responses: { "201": { description: "Report generated" } } } },
+      "/reports/{id}": { get: { operationId: "getReport", security: [{ cookieAuth: [] }], parameters: [{ name: "id", in: "path", required: true, schema: { type: "integer" } }], responses: { "200": { description: "Generated report" } } } },
+      "/whatsapp/messages": { get: { operationId: "listWhatsappMessages", security: [{ cookieAuth: [] }], responses: { "200": { description: "Outbound and inbound message status" } } } },
     },
     components: {
       securitySchemes: { cookieAuth: { type: "apiKey", in: "cookie", name: "nuqta_session" } },
@@ -67,7 +75,12 @@ export function openApiDocument() {
 
 restApi.get("/openapi.json", (c) => c.json(openApiDocument()));
 restApi.get("/health", async (c) => {
-  return c.json({ ok: true, database: "up" });
+  try {
+    await getDb().execute(sql`select 1`);
+    return c.json({ ok: true, database: "up" });
+  } catch {
+    return c.json({ ok: false, database: "down" }, 503);
+  }
 });
 
 async function currentContext(request: Request): Promise<TrpcContext> {
@@ -124,6 +137,14 @@ restApi.get("/persons", async (c) => {
   return c.json(await appRouter.createCaller(context).persons.list());
 });
 
+restApi.get("/persons/search", async (c) => {
+  const query = c.req.query("q")?.trim();
+  if (!query) return c.json({ error: "q is required" }, 400);
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  return c.json(await appRouter.createCaller(context).persons.search({ query, limit: 20 }));
+});
+
 restApi.post("/persons", async (c) => {
   const parsed = personSchema.safeParse(await c.req.json().catch(() => null));
   if (!parsed.success) return c.json({ error: "Invalid person payload" }, 400);
@@ -169,4 +190,72 @@ restApi.post("/contributions", async (c) => {
     const message = error instanceof Error ? error.message : "Contribution failed";
     return c.json({ error: message }, message.includes("already") ? 409 : 400);
   }
+});
+
+restApi.get("/balances", async (c) => {
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  return c.json(await appRouter.createCaller(context).balances.matrix());
+});
+
+restApi.get("/balances/pair", async (c) => {
+  const a = Number(c.req.query("a"));
+  const b = Number(c.req.query("b"));
+  if (!Number.isInteger(a) || !Number.isInteger(b) || a <= 0 || b <= 0) {
+    return c.json({ error: "a and b must be positive integers" }, 400);
+  }
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  return c.json(await appRouter.createCaller(context).balances.pairDetails({ a, b }));
+});
+
+restApi.get("/audit", async (c) => {
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  const entityType = c.req.query("entityType");
+  const action = c.req.query("action");
+  const limit = Number(c.req.query("limit") ?? 100);
+  return c.json(await appRouter.createCaller(context).audit.list({
+    entityType: entityType === "person" || entityType === "event" || entityType === "nuqta" ? entityType : undefined,
+    action: action === "create" || action === "update" || action === "delete" ? action : undefined,
+    limit: Number.isInteger(limit) && limit > 0 ? Math.min(limit, 500) : 100,
+  }));
+});
+
+restApi.get("/reports", async (c) => {
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  return c.json(await appRouter.createCaller(context).reports.list());
+});
+
+restApi.get("/reports/:id", async (c) => {
+  const id = Number(c.req.param("id"));
+  if (!Number.isInteger(id) || id <= 0) return c.json({ error: "Invalid report id" }, 400);
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  try {
+    return c.json(await appRouter.createCaller(context).reports.get({ id }));
+  } catch {
+    return c.json({ error: "Report not found" }, 404);
+  }
+});
+
+restApi.post("/reports", async (c) => {
+  const parsed = z.object({ eventId: z.number().int().positive() }).safeParse(await c.req.json().catch(() => null));
+  if (!parsed.success) return c.json({ error: "eventId is required" }, 400);
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  return c.json(await appRouter.createCaller(context).reports.generate(parsed.data), 201);
+});
+
+restApi.get("/whatsapp/messages", async (c) => {
+  const context = await currentContext(c.req.raw);
+  if (!context.user) return c.json({ error: "Unauthenticated" }, 401);
+  const kind = c.req.query("kind");
+  const direction = c.req.query("direction");
+  return c.json(await appRouter.createCaller(context).whatsapp.log({
+    kind: kind === "reminder" || kind === "confirmation" || kind === "phone_verification" || kind === "correction" || kind === "bot_reply" || kind === "bot_query" ? kind : undefined,
+    direction: direction === "in" || direction === "out" ? direction : undefined,
+    limit: 100,
+  }));
 });

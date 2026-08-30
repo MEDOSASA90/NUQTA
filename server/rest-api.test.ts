@@ -9,5 +9,9 @@ describe("versioned REST API contract", () => {
     expect(document.paths["/events"]).toBeDefined();
     expect(document.paths["/persons"]).toBeDefined();
     expect(document.paths["/contributions"]).toBeDefined();
+    expect(document.paths["/balances"]).toBeDefined();
+    expect(document.paths["/audit"]).toBeDefined();
+    expect(document.paths["/reports"]).toBeDefined();
+    expect(document.paths["/whatsapp/messages"]).toBeDefined();
   });
 });
