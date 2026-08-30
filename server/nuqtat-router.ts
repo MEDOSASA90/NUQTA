@@ -15,7 +15,6 @@ import {
 import { getPerson } from "./queries/persons.js";
 import { getTenantById } from "./queries/tenants.js";
 import { assertCanEditLedger, assertCanRecord } from "./queries/lifecycle.js";
-import { sendWhatsapp } from "./services/whatsapp.js";
 import { enqueueNotificationJob } from "./queries/notification-jobs.js";
 import {
   composeConfirmationBody,
@@ -68,6 +67,33 @@ async function enqueueConfirmation(params: {
     nextAttemptAt: new Date(),
   });
   return true;
+}
+
+async function enqueueCorrection(params: {
+  tenantId: number;
+  payerId: number;
+  phone: string;
+  body: string;
+  eventId: number;
+  nuqtaId: number;
+  idempotencyKey: string;
+}): Promise<void> {
+  await enqueueNotificationJob({
+    tenantId: params.tenantId,
+    kind: "correction",
+    idempotencyKey: params.idempotencyKey,
+    payload: {
+      tenantId: params.tenantId,
+      personId: params.payerId,
+      phone: params.phone,
+      body: params.body,
+      eventId: params.eventId,
+      nuqtaId: params.nuqtaId,
+    },
+    status: "queued",
+    attempts: 0,
+    nextAttemptAt: new Date(),
+  });
 }
 
 export const nuqtatRouter = createRouter({
@@ -224,14 +250,14 @@ export const nuqtatRouter = createRouter({
           newAmount: input.amount,
           note: input.note,
         });
-        await sendWhatsapp({
+        await enqueueCorrection({
           tenantId: ctx.tenant.id,
-          personId: payer.id,
+          payerId: payer.id,
           phone: payer.phone,
-          kind: "correction",
           body,
           eventId: old.eventId,
           nuqtaId: old.id,
+          idempotencyKey: `correction:update:${old.id}:${input.amount}:${updated?.updatedAt?.getTime() ?? Date.now()}`,
         });
       }
 
@@ -285,14 +311,14 @@ export const nuqtatRouter = createRouter({
           oldAmount: old.amount,
           note: input.note,
         });
-        await sendWhatsapp({
+        await enqueueCorrection({
           tenantId: ctx.tenant.id,
-          personId: payer.id,
+          payerId: payer.id,
           phone: payer.phone,
-          kind: "correction",
           body,
           eventId: old.eventId,
           nuqtaId: old.id,
+          idempotencyKey: `correction:delete:${old.id}`,
         });
       }
 
