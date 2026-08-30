@@ -8,7 +8,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [
     devServer({ entry: "server/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
     inspectAttr(),

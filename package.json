@@ -12,6 +12,7 @@
     "check": "tsc -b",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.965.0",
     "@aws-sdk/s3-request-presigner": "^3.965.0",
+    "@emotion/is-prop-valid": "^1.4.0",
     "@hono/node-server": "^1.14.3",
     "@hookform/resolvers": "^5.2.2",
     "@pdf-lib/fontkit": "^1.1.1",
@@ -90,6 +92,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@hono/vite-dev-server": "^0.19.0",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
