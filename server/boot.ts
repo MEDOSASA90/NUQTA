@@ -15,6 +15,7 @@ import { isMemberOfTenant } from "./queries/tenants.js";
 import { generateEventReport, reportFilePath } from "./services/report-pdf.js";
 import { getDb } from "./queries/connection.js";
 import { sql } from "drizzle-orm";
+import { restApi } from "./rest-api.js";
 
 const app = new Hono<{ Bindings: HttpBindings }>();
 
@@ -30,6 +31,8 @@ app.get("/api/health", async (c) => {
     return c.json({ ok: false, database: "down" }, 503);
   }
 });
+
+app.route("/api/v1", restApi);
 
 app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
 app.get(Paths.oauthCallback, createOAuthCallbackHandler());
