@@ -33,7 +33,13 @@ export async function processNotificationJobs(limit = 20): Promise<NotificationW
     try {
       const payload = payloadSchema.parse(job.payload);
       const result = await sendWhatsapp({ ...payload, kind: job.kind });
-      if (result.status === "failed") throw new Error("WhatsApp provider rejected the message");
+      if (result.status !== "sent") {
+        throw new Error(
+          result.status === "simulated"
+            ? "WhatsApp provider is not configured"
+            : "WhatsApp provider rejected the message",
+        );
+      }
       await markNotificationSent(job.id);
       await updateNuqta(payload.tenantId, payload.nuqtaId, { whatsappNotified: true, notificationSentAt: new Date() });
       summary.sent += 1;

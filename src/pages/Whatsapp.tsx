@@ -660,6 +660,7 @@ function SettingsTab({ onRemindersSent }: { onRemindersSent: () => void }) {
   const [sendResult, setSendResult] = useState<{
     hostName: string
     sent: number
+    failed: number
     skippedAlreadySentToday: number
     skippedUnverified: number
   } | null>(null)
@@ -881,7 +882,7 @@ function SettingsTab({ onRemindersSent }: { onRemindersSent: () => void }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, ease: EASE }}
-              className="mt-4 grid gap-2.5 sm:grid-cols-3"
+              className="mt-4 grid gap-2.5 sm:grid-cols-4"
             >
               <div className="rounded-xl border border-laha-solid/30 bg-laha-bg p-3.5 text-center">
                 <div className="num-ltr font-kufi text-[24px] font-bold leading-7 text-laha-text">{sendResult.sent}</div>
@@ -898,6 +899,10 @@ function SettingsTab({ onRemindersSent }: { onRemindersSent: () => void }) {
                   {sendResult.skippedUnverified}
                 </div>
                 <div className="text-[12px] font-semibold text-partial-text">اتخطّى (تليفون غير مؤكد)</div>
+              </div>
+              <div className="rounded-xl border border-redink/20 bg-redink-bg p-3.5 text-center">
+                <div className="num-ltr font-kufi text-[24px] font-bold leading-7 text-redink">{sendResult.failed}</div>
+                <div className="text-[12px] font-semibold text-redink">فشل الإرسال</div>
               </div>
               <p className="text-[12px] text-ink-500 sm:col-span-3">
                 تم تنفيذ الإرسال لفرحة «{sendResult.hostName}» — الرسائل متسجلة في سجل الرسائل

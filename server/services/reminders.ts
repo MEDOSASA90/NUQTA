@@ -18,6 +18,7 @@ export type ReminderSummary = {
   eventId: number;
   hostName: string;
   sent: number;
+  failed: number;
   skippedAlreadySentToday: number;
   skippedUnverified: number;
 };
@@ -46,6 +47,7 @@ export async function sendEventReminders(
     eventId,
     hostName: event.hostName,
     sent: 0,
+    failed: 0,
     skippedAlreadySentToday: 0,
     skippedUnverified: 0,
   };
@@ -76,7 +78,7 @@ export async function sendEventReminders(
       daysLeft: left,
       outstanding: settlement.outstandingBefore,
     });
-    await sendWhatsapp({
+    const result = await sendWhatsapp({
       tenantId,
       personId,
       phone: person.phone,
@@ -84,7 +86,8 @@ export async function sendEventReminders(
       body,
       eventId,
     });
-    summary.sent += 1;
+    if (result.status === "sent") summary.sent += 1;
+    else summary.failed += 1;
   }
   return summary;
 }
