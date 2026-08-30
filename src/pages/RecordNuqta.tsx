@@ -227,6 +227,8 @@ function RecordNuqtaInner() {
         'success',
         res.whatsappNotified
           ? `اتسجلت نقطة ${formatMoney(savedAmount)} ج.م ✓ والتأكيد في طريقه لواتساب`
+          : res.whatsappQueued
+            ? `اتسجلت نقطة ${formatMoney(savedAmount)} ج.م ✓ والتأكيد هيتبعت تلقائيًا`
           : `اتسجلت نقطة ${formatMoney(savedAmount)} ج.م ✓ (من غير إشعار واتساب)`,
       )
       clearForm()

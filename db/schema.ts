@@ -253,6 +253,40 @@ export const whatsappMessages = mysqlTable(
 export type WhatsappMessage = typeof whatsappMessages.$inferSelect;
 export type InsertWhatsappMessage = typeof whatsappMessages.$inferInsert;
 
+export type NotificationJobPayload = {
+  tenantId: number;
+  personId: number;
+  phone: string;
+  body: string;
+  eventId: number;
+  nuqtaId: number;
+};
+
+/** Durable outbound jobs. External delivery is never part of the ledger write transaction. */
+export const notificationJobs = mysqlTable(
+  "notification_jobs",
+  {
+    id: serial("id").primaryKey(),
+    tenantId: bigint("tenantId", { mode: "number", unsigned: true }).notNull(),
+    kind: mysqlEnum("kind", ["confirmation", "correction", "reminder"]).notNull(),
+    idempotencyKey: varchar("idempotencyKey", { length: 255 }).notNull().unique(),
+    payload: json("payload").$type<NotificationJobPayload>().notNull(),
+    status: mysqlEnum("status", ["queued", "processing", "sent", "failed"]).notNull().default("queued"),
+    attempts: int("attempts").notNull().default(0),
+    nextAttemptAt: timestamp("nextAttemptAt").defaultNow().notNull(),
+    lastError: text("lastError"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull().$onUpdate(() => new Date()),
+  },
+  (t) => [
+    index("notification_jobs_status_next_attempt").on(t.status, t.nextAttemptAt),
+    index("notification_jobs_tenant_created").on(t.tenantId, t.createdAt),
+  ],
+);
+
+export type NotificationJob = typeof notificationJobs.$inferSelect;
+export type InsertNotificationJob = typeof notificationJobs.$inferInsert;
+
 export const phoneVerificationChallenges = mysqlTable(
   "phone_verification_challenges",
   {

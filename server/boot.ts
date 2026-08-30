@@ -17,6 +17,7 @@ import { getDb } from "./queries/connection.js";
 import { sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { restApi } from "./rest-api.js";
+import { processNotificationJobs } from "./services/notification-worker.js";
 
 type AppEnvironment = {
   Bindings: HttpBindings;
@@ -60,8 +61,20 @@ app.get("/api/cron/daily-reminders", async (c) => {
   if (secret && c.req.header("x-cron-secret") !== secret) {
     return c.json({ error: "Forbidden" }, 403);
   }
-  const results = await sendDailyReminders();
-  return c.json({ ok: true, results });
+  const [results, notifications] = await Promise.all([
+    sendDailyReminders(),
+    processNotificationJobs(),
+  ]);
+  return c.json({ ok: true, results, notifications });
+});
+
+app.get("/api/cron/notifications", async (c) => {
+  const secret = process.env.CRON_SECRET;
+  if (secret && c.req.header("x-cron-secret") !== secret) {
+    return c.json({ error: "Forbidden" }, 403);
+  }
+  const notifications = await processNotificationJobs();
+  return c.json({ ok: true, notifications });
 });
 
 // ── النظام ج: webhook البوت (استقبال رسائل Cloud API + نصوص مفرّغة) ──

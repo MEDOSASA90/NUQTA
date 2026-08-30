@@ -16,6 +16,7 @@ import { getPerson } from "./queries/persons.js";
 import { getTenantById } from "./queries/tenants.js";
 import { assertCanEditLedger, assertCanRecord } from "./queries/lifecycle.js";
 import { sendWhatsapp } from "./services/whatsapp.js";
+import { enqueueNotificationJob } from "./queries/notification-jobs.js";
 import {
   composeConfirmationBody,
   composeCorrectionBody,
@@ -24,7 +25,7 @@ import {
 const amountSchema = z.number().int().positive("المبلغ لازم يكون أكبر من صفر");
 
 /** النظام ب — تأكيد فوري (لو مفعّل والتليفون مؤكد) */
-async function maybeSendConfirmation(params: {
+async function enqueueConfirmation(params: {
   tenantId: number;
   eventId: number;
   nuqtaId: number;
@@ -57,16 +58,16 @@ async function maybeSendConfirmation(params: {
     eventDate: new Date(event.eventDate),
     settlement,
   });
-  const msg = await sendWhatsapp({
+  await enqueueNotificationJob({
     tenantId,
-    personId: payer.id,
-    phone: payer.phone,
     kind: "confirmation",
-    body,
-    eventId,
-    nuqtaId,
+    idempotencyKey: `confirmation:${nuqtaId}`,
+    payload: { tenantId, personId: payer.id, phone: payer.phone, body, eventId, nuqtaId },
+    status: "queued",
+    attempts: 0,
+    nextAttemptAt: new Date(),
   });
-  return msg.status === "sent" || msg.status === "simulated";
+  return true;
 }
 
 export const nuqtatRouter = createRouter({
@@ -131,17 +132,13 @@ export const nuqtatRouter = createRouter({
         editedAfterDone: afterDone,
       });
 
-      const notified = await maybeSendConfirmation({
+      const notificationQueued = await enqueueConfirmation({
         tenantId: ctx.tenant.id,
         eventId: event.id,
         nuqtaId: nuqta.id,
         payerId: payer.id,
         amount: input.amount,
       });
-      const finalNuqta = notified
-        ? updateNuqta(ctx.tenant.id, nuqta.id, { whatsappNotified: true })
-        : nuqta;
-
       await writeAudit({
         tenantId: ctx.tenant.id,
         actorUserId: ctx.user.id,
@@ -149,11 +146,11 @@ export const nuqtatRouter = createRouter({
         entityId: nuqta.id,
         action: "create",
         beforeJson: null,
-        afterJson: { ...nuqta, whatsappNotified: notified },
+        afterJson: { ...nuqta, whatsappNotified: false, notificationQueued },
         note: afterDone ? "نقطة مضافة بعد قفل الفرحة" : null,
       });
 
-      return { nuqta: await finalNuqta, settlement, whatsappNotified: notified };
+      return { nuqta, settlement, whatsappNotified: false, whatsappQueued: notificationQueued };
     }),
 
   /** معاينة حالة السداد قبل الحفظ (بدون أي كتابة) */
